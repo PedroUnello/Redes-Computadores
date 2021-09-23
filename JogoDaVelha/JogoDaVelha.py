@@ -6,6 +6,8 @@ import re
 import random
 import sys
 
+caminhoParaPasta = "/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/"
+
 def IA(m,lado,alea): #Função para calcular a jogada do bot, usando recursão e parametros como flags
     loopAnterior,jogada = [-1,-1], [-1,-1]
     contador,controle = 0, 0
@@ -79,7 +81,7 @@ def IA(m,lado,alea): #Função para calcular a jogada do bot, usando recursão e
     return retorno
 
 def ManipularPlacar(modo,imprimir,filtrar): #função com parametros opcionais como flags, para manipular e em casos alterar o placar
-    placarGeral = open("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/placar.txt", modo)
+    placarGeral = open(caminhoParaPasta + "placar.txt", modo)
     texto = placarGeral.read().splitlines()
     placarGeral.close()
     if imprimir:
@@ -203,10 +205,10 @@ class Jogador():
         for i in range(len(tabuleiro.matriz)):
             for j in range(len(tabuleiro.matriz)):
                 if tabuleiro.matriz[i][j] == "O":
-                    Ijogada = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/O1.png")
+                    Ijogada = pg.image.load(caminhoParaPasta + "img/" + "O1.png")
                     screen.blit(Ijogada,(slots[3*i+j][0]+10,slots[3*i+j][1]-10))
                 if tabuleiro.matriz[i][j] == "X":
-                    Ijogada = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/X1.png")
+                    Ijogada = pg.image.load(caminhoParaPasta + "img/" + "X1.png")
                     screen.blit(Ijogada,(slots[3*i+j][0]+10,slots[3*i+j][1]-10))
         return (0,0)
 
@@ -218,8 +220,8 @@ class Jogador():
                 else:
                     tabuleiro.matriz[i][j] = "X"
         screen.fill((0,0,0))
-        backGround = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/BackGround.jpeg")
-        premio = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Premio1.png")
+        backGround = pg.image.load(caminhoParaPasta + "img/" + "BackGround.jpeg")
+        premio = pg.image.load(caminhoParaPasta + "img/" + "Premio1.png")
         screen.blit(backGround, (0, 0))
         screen.blit(premio, (0, 0))
         ImprimirVisual(["Jogador", " "+self.Nome, "Desistiu"],espaço = 27, alturaInicial=480, posiçãoInicial=535, cor=(0, 255, 0))
@@ -289,12 +291,12 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
 
         if not Preparado:
             jaEscolhidos = []
-            backGround = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/BackGround.jpeg")
+            backGround = pg.image.load(caminhoParaPasta + "img/" + "BackGround.jpeg")
             screen.blit(backGround, (0,0))
-            BotãoJogar = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão"+ PrepararBotao(jaEscolhidos) +".png"),(500,300),["Jogar"])
-            BotãoPlacar = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão"+ PrepararBotao(jaEscolhidos) +".png"),(500,400),["Placar"])
-            BotãoSair = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão"+ PrepararBotao(jaEscolhidos) +".png"),(500,500),["Sair"])
-            BotãoCréditos = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão"+ PrepararBotao(jaEscolhidos) +".png"),(500,600),["Créditos"])
+            BotãoJogar = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão"+ PrepararBotao(jaEscolhidos) +".png"),(500,300),["Jogar"])
+            BotãoPlacar = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão"+ PrepararBotao(jaEscolhidos) +".png"),(500,400),["Placar"])
+            BotãoSair = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão"+ PrepararBotao(jaEscolhidos) +".png"),(500,500),["Sair"])
+            BotãoCréditos = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão"+ PrepararBotao(jaEscolhidos) +".png"),(500,600),["Créditos"])
             BotãoJogar.Ação(40,15)
             BotãoPlacar.Ação(40,15)
             BotãoSair.Ação(50,15)
@@ -305,11 +307,11 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
             del BotãoJogar
             Tcor = str(random.randint(1,2))
             screen.fill((0,0,0))
-            backGround = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/TabuD" + Tcor +".png")
+            backGround = pg.image.load(caminhoParaPasta + "img/" + "TabuD" + Tcor +".png")
             screen.blit(backGround, (0,0))
             tabuleiro = Tabuleiro()
             tabuleiro.matriz = [[0,0,0],[0,0,0],[0,0,0]]
-            tabuleiro.Imagem = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Tabu" + Tcor + ".png")
+            tabuleiro.Imagem = pg.image.load(caminhoParaPasta + "img/" + "Tabu" + Tcor + ".png")
             for i in range(9):
                 colliders[i] = pg.Rect(slots[i],(85,95))
             Jog2,Jog1 = None, None
@@ -320,8 +322,8 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
         elif CompararPosição(pos, BotãoPlacar.Posição, BotãoPlacar.Imagem.get_rect().size):
             del BotãoPlacar
             screen.fill((0,0,0))
-            backGround = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/BackGround.jpeg")
-            placarBG = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Placar.png")
+            backGround = pg.image.load(caminhoParaPasta + "img/" + "BackGround.jpeg")
+            placarBG = pg.image.load(caminhoParaPasta + "img/" + "Placar.png")
             screen.blit(backGround, (0,0))
             screen.blit(placarBG,(0,0))
             ManipularPlacar("r",True, False)
@@ -335,8 +337,8 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
         elif CompararPosição(pos, BotãoCréditos.Posição, BotãoCréditos.Imagem.get_rect().size):
             del BotãoCréditos
             screen.fill((0,0,0))
-            backGround = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/BackGround.jpeg")
-            posti = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Postite.png")
+            backGround = pg.image.load(caminhoParaPasta + "img/" + "BackGround.jpeg")
+            posti = pg.image.load(caminhoParaPasta + "img/" + "Postite.png")
             screen.blit(backGround, (0,0))
             screen.blit(posti,(0,0))
             ncréditos = ['Pedro Unello Neto','- 41929713','Nathan Silva Macena','- 41990404']
@@ -379,8 +381,8 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
         barraPesquisa = pg.Rect(50,50,90,30)
         corA = (0,255,0)
         corI = (0,180,0)
-        BotãoVoltar = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão1.png"),(250,300),["Voltar"])
-        BotãoProcurar = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão2.png"),(250,250),["Procurar"])
+        BotãoVoltar = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão1.png"),(250,300),["Voltar"])
+        BotãoProcurar = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão2.png"),(250,250),["Procurar"])
         BotãoVoltar.Ação(40,15)
         BotãoProcurar.Ação(25,16)
 
@@ -407,8 +409,8 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
             procurando = False
             searchPatter = re.compile('^'+userInput[0] + '.*[0-9]$', re.IGNORECASE)
             screen.fill((0,0,0))
-            backGround = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/BackGround.jpeg")
-            placarBG = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Placar.png")
+            backGround = pg.image.load(caminhoParaPasta + "img/" + "BackGround.jpeg")
+            placarBG = pg.image.load(caminhoParaPasta + "img/" + "Placar.png")
             screen.blit(backGround, (0,0))
             screen.blit(placarBG,(0,0))
             ManipularPlacar("r",True, True)
@@ -431,7 +433,7 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
                 sys.exit()
                 
         if not Preparado:
-            BotãoVoltar = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão3.png"),(520,450),["Voltar"])
+            BotãoVoltar = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão3.png"),(520,450),["Voltar"])
             BotãoVoltar.Ação(40,15)
             Preparado = True
         
@@ -478,9 +480,9 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
                 Preparado = True
             barraCriacao = pg.Rect(50,50,90,30)
             corA = (0,255,0)
-            BotãoSingle = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão2.png"),(355,300),["Single"])
-            BotãoMulti = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão4.png"),(640,300),["Multi"])
-            BotãoVoltar = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão5.png"),(495,720),["Voltar"])
+            BotãoSingle = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão2.png"),(355,300),["Single"])
+            BotãoMulti = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão4.png"),(640,300),["Multi"])
+            BotãoVoltar = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão5.png"),(495,720),["Voltar"])
             BotãoSingle.Ação(25,16)
             BotãoMulti.Ação(40,15)
             BotãoVoltar.Ação(40,15)
@@ -497,9 +499,9 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
             userInput[0] = userInput[0].lower()
             userInput[0] = userInput[0][0].upper() + userInput[0][1:]
             if Jog1 == None:
-                Jog1 = Jogador(userInput[0],0,["X","/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/X1.png"])
+                Jog1 = Jogador(userInput[0],0,["X",caminhoParaPasta + "img/" + "X1.png"])
             elif Jog2 == None:
-                Jog2 = Jogador(userInput[0],0,["O","/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/O1.png"])
+                Jog2 = Jogador(userInput[0],0,["O",caminhoParaPasta + "img/" + "O1.png"])
             userInput = ['']
             criando = False
             
@@ -530,9 +532,9 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
                 else:
                     if random.randint(1,2) == 1:
                         Jog2 = Jog1
-                        Jog1 = Jogador("Bot134679",0,["O","/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/O1.png"])
+                        Jog1 = Jogador("Bot134679",0,["O",caminhoParaPasta + "img/" + "O1.png"])
                     else:
-                        Jog2 = Jogador("Bot134679",0,["O","/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/O1.png"])
+                        Jog2 = Jogador("Bot134679",0,["O",caminhoParaPasta + "img/" + "O1.png"])
                     jogandoS = True
                     recompensa = 5
                 pg.display.flip()
@@ -572,8 +574,8 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
 
             if jogandoS:
 
-                BotãoRetroceder = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão4.png"),(595,720),["Retroceder"])
-                BotãoDesistir = Botão(pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Botão5.png"),(395,720),["Desistir"])
+                BotãoRetroceder = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão4.png"),(595,720),["Retroceder"])
+                BotãoDesistir = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão5.png"),(395,720),["Desistir"])
                 BotãoRetroceder.Ação(20,15)
                 BotãoDesistir.Ação(30,15)
                 if CompararPosição(pos, BotãoRetroceder.Posição, BotãoRetroceder.Imagem.get_rect().size) and contTurno != 0:
@@ -618,12 +620,12 @@ while True: #laço de jogo, segura os outros laços de modos, visto que trabalha
             if tabuleiro.finalizado:
                 pg.time.delay(2000)
                 screen.fill((0,0,0))
-                backGround = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/BackGround.jpeg")
-                premio = pg.image.load("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/img/Premio1.png")
+                backGround = pg.image.load(caminhoParaPasta + "img/" + "BackGround.jpeg")
+                premio = pg.image.load(caminhoParaPasta + "img/" + "Premio1.png")
                 screen.blit(backGround,(0,0))
                 screen.blit(premio,(0,0))
                 textoL = ManipularPlacar("r",False,False)
-                placarGeral = open("/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/placar.txt", "w")
+                placarGeral = open(caminhoParaPasta + "placar.txt", "w")
 
                 if Jog2.Nome != "Bot134679" and Jog1.Nome != "Bot134679":
                     existente = False
