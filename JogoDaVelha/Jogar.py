@@ -201,7 +201,7 @@ while True:
         screen.blit(tabuleiro.Imagem,(0,0))
         barraCriacao = pg.Rect(50,50,90,30)
         corA = (0,255,0)
-        BotãoMulti = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão" + random.randint(1,5) + ".png"),(500,300),["Multi"],"PlaceHolder")
+        BotãoMulti = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão" + ".png"),(500,300),["Multi"],"PlaceHolder")
         screen.blit(BotãoMulti.Imagem,BotãoMulti.Posição)
         ImprimirVisual(BotãoMulti.Nome,None,None,BotãoMulti.Posição[1]+15,BotãoMulti.Posição[0]+40)
 
