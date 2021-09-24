@@ -1,16 +1,14 @@
 import pygame as pg
-import re
 import random
 import sys
 import socket
-
-caminhoParaPasta = "/home/pedrou/Documentos/VSCodeWS/JogoDaVelha/"
+from pathlib import Path
 
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #Cria um atributo client, utilizando o prot TCP
         self.server = "192.168.15.5" #Ip a conectar (servidor)
-        self.port = 5000 #Porta de conexão
+        self.port = 41929 #Porta de conexão
         self.addr = (self.server, self.port) #cria o endereço
         self.data = self.connect() #chama o método local para conectar, para tratar erros de conexão em uma excessão,
                                   # self.data são os dados recebidos na conexão com o servidor, data=dados de posição/jogada no jogo
@@ -22,7 +20,7 @@ class Network:
         except socket.error as e:
             print(e) #Printa o erro no terminal do jogo
 
-    def send(self, data): #
+    def send(self, data): #Envia os dados ao servidor e retorna a resposta
         try:
             self.client.send(str.encode(data)) #Faz o encode para utf-8, e manda pelo socket criado da instância
             return self.client.recv(2048).decode() #Similar ao connect
@@ -30,11 +28,11 @@ class Network:
             print(e)
 
 class Jogador():
-    valido = False
     def __init__(self, Nome, Pontuação, Lado):
         self.Nome = Nome
         self.Pontuação = Pontuação
         self.Lado = Lado
+        self.valido = False
 
     def Jogar(self, pos,colliders):
         for i in range(len(colliders)):
@@ -57,7 +55,6 @@ class Jogador():
         print("Jogador", self.Nome, "Desistiu")
 
 class Botão():
-
     def __init__(self,Imagem,Posição,Nome,Ação):
         self.Imagem = Imagem
         self.Posição = Posição
@@ -70,8 +67,7 @@ class Botão():
     def __delete__(self):
         del self
 
-class Tabuleiro():
-    
+class Tabuleiro():  
     def __init__(self):
         self.matriz = [[0,0,0],[0,0,0],[0,0,0]]
         self.Imagem = pg.image.load(caminhoParaPasta + "img/" + "Tabu1.png")
@@ -155,7 +151,7 @@ screen = pg.display.set_mode((largura, altura))
 pg.display.set_caption("Jogo da Velha -Sockets-")
 screen.fill((0,0,0))
 pg.display.flip()
-
+caminhoParaPasta = str(Path().parent.absolute()) + "/"
 enter, criando, pronto, jogando = False, False, False, False
 lado,userInput = ["X","O"], ['']
 contTurno = 0
@@ -205,7 +201,7 @@ while True:
         screen.blit(tabuleiro.Imagem,(0,0))
         barraCriacao = pg.Rect(50,50,90,30)
         corA = (0,255,0)
-        BotãoMulti = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão4.png"),(500,300),["Multi"],"PlaceHolder")
+        BotãoMulti = Botão(pg.image.load(caminhoParaPasta + "img/" + "Botão" + random.randint(1,5) + ".png"),(500,300),["Multi"],"PlaceHolder")
         screen.blit(BotãoMulti.Imagem,BotãoMulti.Posição)
         ImprimirVisual(BotãoMulti.Nome,None,None,BotãoMulti.Posição[1]+15,BotãoMulti.Posição[0]+40)
 
@@ -244,13 +240,6 @@ while True:
         pg.display.flip()
 
         if pronto:
-            placarGeral = open("placar.txt","r")
-            texto = placarGeral.read()
-            textoL = texto.splitlines()
-            placarGeral.close()
-            for i in range(len(textoL)):
-                if re.match("\A" + str(Jog1.Nome), textoL[i]):
-                    Jog1.Pontuação = int(re.findall(".[0-9][0-9]$",textoL[i])[0])
             pos = (0,0)
             screen.blit(tabuleiro.Imagem,(0,0))
             jogando = True
@@ -270,9 +259,6 @@ while True:
         hold = read_data(n.send(make_data([pos,contTurno,1,Jog1.Nome]))) #Mandando a atual, recebe a do oponente
         if hold[2] != 0: #Controla a jogada pela vez -> dada nos dados sincronizados do servidor
             Jog2.Nome = hold[3]
-            for i in range(len(textoL)):
-                if re.match("\A" + str(Jog2.Nome), textoL[i]):
-                    Jog2.Pontuação = int(re.findall(".[0-9][0-9]$",textoL[i])[0])
             jogadorAtual = listaJogadores[hold[1]%2] #jogadorAtual -> oponente (sincroniza pelo servidor)
             jogadorAtual.Jogar(hold[0],colliders) #Joga pelo jogador atual (oponente) utilizando os dados do mouse, sincronizados no servidor
             jogadorAtual = listaJogadores[contTurno%2] #jogadorAtual -> player
@@ -294,35 +280,21 @@ while True:
     if tabuleiro.finalizado or contTurno == 9: #Se acabar o jogo
 
         if tabuleiro.finalizado: #Caso alguem tenha ganho
+            if f[1] % 2 != contTurno % 2: #Verifica quem ganhou
+                vencedor = Jog1
+            else:
+                vencedor = Jog2
+            vencedor.Pontuação += recompensa #Aumenta a pontuação, e mostra o vencedor
+            n.send(str(vencedor.Nome) + "," + str(vencedor.Pontuação))
             pg.time.delay(2000)
             screen.fill((0,0,0)) #Prepara a tela
             backGround = pg.image.load(caminhoParaPasta + "img/" + "BackGround.jpeg")
             premio = pg.image.load(caminhoParaPasta + "img/" + "Premio1.png")
             screen.blit(backGround,(0,0))
             screen.blit(premio,(0,0))
-            placarGeral = open("placar.txt","r") #abre o placar (no cliente, sincronizar com servidor)
-            textoL = placarGeral.read().splitlines()
-            placarGeral.close()
-            placarGeral = open("placar.txt","w")
-            existente = False
-            if f[1] % 2 != contTurno % 2: #Verifica quem ganhou
-                vencedor = Jog1
-            else:
-                vencedor = Jog2
-            vencedor.Pontuação += recompensa #Aumenta a pontuação, e mostra o vencedor
             ImprimirVisual(["Vencedor", "********", "{}!".format(vencedor.Nome)], alturaInicial=480,
                             posiçãoInicial=530, espaço=20, cor=(0, 0, 255))
-            searchPatter = re.compile("^" + str(vencedor.Nome) + ".*[0-9]$") #Procura se o nome já existe com regex
-            for i in range(len(textoL)): #Incrementa e/ou coloca a pontuação daquele nome
-                if re.match(searchPatter, textoL[i]):
-                    existente = True
-                    textoL[i] = searchPatter.sub(str(vencedor.Nome) + " - " + str(vencedor.Pontuação), textoL[i])
-            if not existente:
-                textoL.append(str(vencedor.Nome) + " - " + str(vencedor.Pontuação))
             del n #Deleta a instância da conexão    
-            textoL = "\n".join(textoL)    
-            placarGeral.write(textoL)
-            placarGeral.close()
 
         else: #Bom... deu velha
             ImprimirVisual(["Empate <-> Deu velha"], alturaInicial = 750, posiçãoInicial = 470,cor = (0,0,0))
@@ -341,11 +313,4 @@ while True:
         
     pg.display.flip()
     enter = False
-
-#A fazer NESTA VERSÃO:
-#Fazer um placar apenas para o multiplayer"online", ideia: Usar Flask ou django
-#Coloca os nomes do jogadores jogando (feito, mas só do segundo turno em diante)
-#Arruma o sistema de criação pra funcionar com servidor (feito, mas kinda mau feito)
-#Resetar os parametros para funcionar mais de 1 jogo (feito, mas kinda mau feito)
-#Apenas começar o jogo, quando 2 jogadores estiverem conectados (feito, mas kinda mau feito)
 
