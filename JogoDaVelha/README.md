@@ -1,5 +1,8 @@
 <head>
 
+ Vídeo Explicativo
+ https://youtu.be/QmP8sk0_8OU
+ 
 #Jogo da velha com pygame <br><br>
 Obs: Favor criar um arquivo placar.txt na pasta dos .py
 
